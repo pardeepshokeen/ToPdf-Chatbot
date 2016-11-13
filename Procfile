@@ -1,1 +1,1 @@
-web: gunicorn pdfconverter.wsgi
+web: gunicorn pdfcoverter.wsgi
