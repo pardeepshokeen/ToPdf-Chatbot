@@ -5,8 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.utils import ImageReader
-import json, requests
+import json, requests, os
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 VERIFY_TOKEN = '13thnov2016'
 PAGE_ACCESS_TOKEN='EAADKnMFiOeABAMeUxrHrzp8X9lLxLa93BErKfI3oZBdDyvKZCXmBawIZALjL2en73JDFAbipf9EqAMGObAB4TKZAbvslp4ujRhaJqRntTl3IRZB0NG6b8i4onZBRm9FGDRIcTNZAte1VNwup7d2F52ZA8OBGqVBuyLL5AZBuE8XVrmwZDZD'
 c=None
@@ -18,7 +19,7 @@ def logg(text,symbol='*'):
 	return symbol*10 + text + symbol*10
 
 def pdf_view(request):
-    with open('/home/rajat/Desktop/rajat/django101/pdfcoverter/file.pdf', 'r') as pdf:
+    with open(os.path.join(BASE_DIR,'file.pdf'), 'r') as pdf:
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         return response
