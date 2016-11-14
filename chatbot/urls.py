@@ -3,6 +3,6 @@ from chatbot.views import *
 
 urlpatterns = patterns('',
 	url(r'^$', index),
-	url(r'^pdf$', pdf_view),
+	url(r'^file.pdf$', pdf_view),
 	url(r'^facebook_auth/?$', MyChatBotView.as_view()),
 )
