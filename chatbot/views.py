@@ -40,6 +40,7 @@ def add(fbid, image):
 		c=Canvas('file.pdf')
 	c.drawImage(image, 0,0, width=800,height=800)
 	c.showPage()
+	c.save()
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
 	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Image Added Successfully' }})
 	status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
