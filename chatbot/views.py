@@ -22,10 +22,10 @@ def logg(text,symbol='*'):
 def post_fb_msg(fbid,message,image=False):
 	post_fb_url='https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
 	output_text = message
-	logg(image, ':)')
-	
+	print image
+
 	if image:
-		output_text = 'Image Url : \n' + message
+		# output_text = 'Image Url : \n' + message
 		post_fb_url2 = "https://graph.facebook.com/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
 		share_button = {
 				"recipient":{
