@@ -25,7 +25,7 @@ def post_fb_msg(fbid,message,image=False):
 	print image
 
 	if image:
-		# output_text = 'Image Url : \n' + message
+		output_text = 'Image Url : \n' + message
 		post_fb_url2 = "https://graph.facebook.com/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
 		share_button = {
 				"recipient":{
@@ -55,10 +55,10 @@ def post_fb_msg(fbid,message,image=False):
 		response_msg = json.dumps(share_button)
 		status1 = requests.post(post_fb_url2, headers={"Content-Type": "application/json"},data=response_msg)
 		print status1.json()
-	else:
-		response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": output_text }})
-		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
-		print status2.json()
+	
+	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": output_text }})
+	status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
+	print status2.json()
 
 class MyChatBotView(generic.View):
 	def get(self,request,*args,**kwargs):
