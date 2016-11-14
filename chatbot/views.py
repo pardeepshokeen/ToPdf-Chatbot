@@ -25,7 +25,7 @@ def pdf_view(request):
         return response
     pdf.closed
 
-def add(image):
+def add(fbid, image):
 	global c
 	c.drawImage(image, 0,0, width=600,height=800,mask='auto')
 	c.showPage()
@@ -135,7 +135,7 @@ def post_fb_msg(fbid,message,image=False):
 		if c is None:
 			c=Canvas('file.pdf')
 		image = ImageReader(message)
-		add(image)
+		add(fbid, image)
 		quick_response(fbid)
 
 	else:
