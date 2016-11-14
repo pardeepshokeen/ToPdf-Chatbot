@@ -7,7 +7,7 @@ from reportlab.pdfgen import canvas
 import json, requests
 
 VERIFY_TOKEN = '13thnov2016'
-PAGE_ACCESS_TOKEN=''
+PAGE_ACCESS_TOKEN='EAADKnMFiOeABAHj30Am6HxYXAUd7IwJV3zNt5STau6yKADNHS8OPAxqBe2MCQ98CLuUDOZA4bqFZCoqCBT4oBMMff91oFpJ2Cos5dAwMy9DiFHA28faUciQqeGqmZByKoNrsOZCSaQFa1WOTmoDwdv8kNgof10EAJUW9ilzG2wZDZD'
 c=canvas.Canvas('file.pdf')
 
 def index(request):
@@ -60,7 +60,7 @@ class MyChatBotView(generic.View):
 				try:
 					if 'attachments' in message['message']:
 						url = message['message']['attachments'][0]['payload']['url']
-						print 'url=%s' %url
+						print 'Image URL=%s' %url
 					else:
 						print logg(message['message'],'<>')
 				except Exception as e:
