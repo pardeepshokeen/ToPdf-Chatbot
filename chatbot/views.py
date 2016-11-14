@@ -48,7 +48,7 @@ def add(fbid, image):
 
 def handle_quickreply(fbid,payload):
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
-
+	global c
 	if 'add' in payload:
 		response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Ok Give us an image' }})
 		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
@@ -56,7 +56,7 @@ def handle_quickreply(fbid,payload):
 		return HttpResponse()
 	
 	else:	
-		global c
+
 		response_msg = {
 				"recipient":{
 				    "id": fbid
