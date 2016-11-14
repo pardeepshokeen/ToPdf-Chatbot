@@ -65,7 +65,7 @@ def handle_quickreply(fbid,payload):
 				    "attachment":{
 				      "type":"file",
 				      "payload":{
-				        "url": os.path.join(BASE_DIR,'file.pdf')
+				        "url": 'https://pdfconv.herokuapp.com/chatbot/file.pdf'
 				      }
 				    }
 				  }
