@@ -37,8 +37,8 @@ def pdf_view(request):
 def add(fbid, image):
 	global c
 	if c is None:
-		c=Canvas('file.pdf', pagesize='LETTER')
-	c.drawImage(image, 0,0, width=WIDTH,height=HEIGHT)
+		c=Canvas('file.pdf')
+	c.drawImage(image, 0,0, width=800,height=800)
 	c.showPage()
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
 	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Image Added Successfully' }})
