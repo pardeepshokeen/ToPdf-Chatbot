@@ -3,21 +3,89 @@ from django.http import HttpResponse
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from reportlab.pdfgen import canvas
+from reportlab.pdfgen.canvas import Canvas
+from reportlab.lib.utils import ImageReader
 import json, requests
 
 VERIFY_TOKEN = '13thnov2016'
 PAGE_ACCESS_TOKEN='EAADKnMFiOeABAMeUxrHrzp8X9lLxLa93BErKfI3oZBdDyvKZCXmBawIZALjL2en73JDFAbipf9EqAMGObAB4TKZAbvslp4ujRhaJqRntTl3IRZB0NG6b8i4onZBRm9FGDRIcTNZAte1VNwup7d2F52ZA8OBGqVBuyLL5AZBuE8XVrmwZDZD'
-c=canvas.Canvas('file.pdf')
+c=None
 
 def index(request):
 	return HttpResponse('hi')
 
-def handle_quickreply(fbid,payload):
-	pass
-
 def logg(text,symbol='*'):
 	return symbol*10 + text + symbol*10
+
+def pdf_view(request):
+    with open('/home/rajat/Desktop/rajat/django101/pdfcoverter/file.pdf', 'r') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+        return response
+    pdf.closed
+
+def add(image,c):
+	c.drawImage(image, 0,0, width=600,height=800,mask='auto')
+	c.showPage()
+
+def handle_quickreply(fbid,payload):
+	
+	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
+
+	if 'add' in payload:
+		response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Ok Give us an image' }})
+		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
+		print status2.json()
+		return HttpResponse()
+	else:
+		
+		c.save()
+		response_msg = {
+				"recipient":{
+				    "id": fbid
+				  },
+				  "message":{
+				    "attachment":{
+				      "type":"file",
+				      "payload":{
+				        "url": 'https://pdfconv.herokuapp.com/chatbot/pdf'
+				      }
+				    }
+				  }
+		}
+		response_msg = json.dumps(response_msg)
+		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg_quick)
+		print status2.json()
+		global c
+		c=None
+		return HttpResponse()
+
+def quick_response(fbid):
+	post_fb_url='https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
+	response_msg_quick = {
+				"recipient":{
+				    "id":fbid
+				  },
+				  "message":{
+				    "text":"Prepare PDF",
+				    "quick_replies":[
+				      {
+				        "content_type":"text",
+				        "title":"Add Image",
+				        "payload":"add"
+				      },
+				      {
+				        "content_type":"text",
+				        "title":"Save and Exit",
+				        "payload":"exit"
+				      }
+				    ]
+				  }
+	}
+	response_msg_quick = json.dumps(response_msg_quick)
+	status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg_quick)
+	print status2.json()
+
 
 def post_fb_msg(fbid,message,image=False):
 	post_fb_url='https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
@@ -39,8 +107,6 @@ def post_fb_msg(fbid,message,image=False):
 				        "elements":[
 				          {
 				            "title":"Image URL",
-				            "subtitle": message,
-				            # "image_url":"https://thechangreport.com/img/lightning.png",
 				            "buttons":[
 				              {
 				                "type":"element_share"
@@ -55,10 +121,20 @@ def post_fb_msg(fbid,message,image=False):
 		response_msg = json.dumps(share_button)
 		status1 = requests.post(post_fb_url2, headers={"Content-Type": "application/json"},data=response_msg)
 		print status1.json()
-	
-	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": output_text }})
-	status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
-	print status2.json()
+		response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": output_text }})
+		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
+		print status2.json()
+
+		if c is None:
+			c=Canvas('file.pdf')
+		image = ImageReader(message)
+		add(image, c)
+		quick_response(fbid)
+
+	else:
+		response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Hi! You can create a pdf from your images.\nJust give us an image' }})
+		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
+		print status2.json()
 
 class MyChatBotView(generic.View):
 	def get(self,request,*args,**kwargs):
@@ -87,7 +163,7 @@ class MyChatBotView(generic.View):
 				try:
 					sender_id = message['sender']['id']
 					message_text = message['message']['text']
-					post_fb_msg(sender_id,message_text)
+					post_fb_msg(sender_id,message_text, False)
 				except Exception as e:
 					print e
 
