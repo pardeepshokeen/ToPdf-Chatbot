@@ -15,11 +15,13 @@ WIDTH = 'LETTER'
 HEIGHT = 'LETTER'
 
 def index(request):
-	with open(os.path.join(BASE_DIR,'file.pdf'), 'r') as pdf:
-		response = HttpResponse(pdf.read(), content_type='application/pdf')
-		response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-		return response
-	pdf.closed
+	# with open(os.path.join(BASE_DIR,'file.pdf'), 'r') as pdf:
+	# 	response = HttpResponse(pdf.read(), content_type='application/pdf')
+	# 	response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+	# 	return response
+	# pdf.closed
+	# add('1', image)
+	# quick_response('1')
 	return HttpResponse('ok')
 
 def logg(text,symbol='*'):
@@ -34,7 +36,9 @@ def pdf_view(request):
 
 def add(fbid, image):
 	global c
-	c.drawImage(image, 0,0, WIDTH,HEIGHT)
+	if c is None:
+		c=Canvas('file.pdf', pagesize='LETTER')
+	c.drawImage(image, 0,0, width=WIDTH,height=HEIGHT)
 	c.showPage()
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
 	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Image Added Successfully' }})
@@ -138,8 +142,6 @@ def post_fb_msg(fbid,message,image=False):
 		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
 		print status2.json()
 
-		if c is None:
-			c=Canvas('file.pdf', pagesize='LETTER')
 		image = ImageReader(message)
 		add(fbid, image)
 		quick_response(fbid)
