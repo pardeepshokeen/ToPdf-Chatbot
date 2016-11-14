@@ -22,11 +22,43 @@ def logg(text,symbol='*'):
 def post_fb_msg(fbid,message,image=False):
 	post_fb_url='https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
 	output_text = message
+	logg(image, ':)')
+	
 	if image:
 		output_text = 'Image Url : \n' + message
-	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": output_text }})
-	status1 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
-	print status1.json()
+		post_fb_url2 = "https://graph.facebook.com/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
+		share_button = {
+				"recipient":{
+				    "id": fbid
+				  },
+				  "message":{
+				    "attachment":{
+				      "type":"template",
+				      "payload":{
+				        "template_type":"generic",
+				        "elements":[
+				          {
+				            "title":"Image URL",
+				            "subtitle": message,
+				            # "image_url":"https://thechangreport.com/img/lightning.png",
+				            "buttons":[
+				              {
+				                "type":"element_share"
+				              }              
+				            ]
+				          }
+				        ]
+				      }
+				    }
+				  }
+		}
+		response_msg = json.dumps(share_button)
+		status1 = requests.post(post_fb_url2, headers={"Content-Type": "application/json"},data=response_msg)
+		print status1.json()
+	else:
+		response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": output_text }})
+		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
+		print status2.json()
 
 class MyChatBotView(generic.View):
 	def get(self,request,*args,**kwargs):
