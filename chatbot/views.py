@@ -139,7 +139,7 @@ def post_fb_msg(fbid,message,image=False):
 		print status2.json()
 
 		if c is None:
-			c=Canvas('file.pdf')
+			c=Canvas('file.pdf' pagesize='LETTER')
 		image = ImageReader(message)
 		add(fbid, image)
 		quick_response(fbid)
