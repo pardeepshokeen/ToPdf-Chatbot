@@ -57,7 +57,7 @@ def handle_quickreply(fbid,payload):
 		return HttpResponse()
 	
 	else:	
-		c.save()
+		
 		response_msg = {
 				"recipient":{
 				    "id": fbid
@@ -72,7 +72,7 @@ def handle_quickreply(fbid,payload):
 				  }
 		}
 		response_msg = json.dumps(response_msg)
-		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg_quick)
+		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
 		print status2.json()
 		c=None
 		return HttpResponse()
