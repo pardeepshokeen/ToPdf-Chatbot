@@ -3,10 +3,12 @@ from django.http import HttpResponse
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-import json, requests, reportlab
+from reportlab.pdfgen import canvas
+import json, requests
 
 VERIFY_TOKEN = '13thnov2016'
 PAGE_ACCESS_TOKEN=''
+c=canvas.Canvas('file.pdf')
 
 def index(request):
 	return HttpResponse('hi')
