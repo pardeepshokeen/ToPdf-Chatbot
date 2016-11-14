@@ -38,7 +38,7 @@ def add(fbid, image):
 	global c
 	if c is None:
 		c=Canvas('file.pdf')
-	c.drawImage(image, 0,0, width=800,height=800)
+	c.drawImage(image, 0,0, width=500,height=600)
 	c.showPage()
 	c.save()
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
