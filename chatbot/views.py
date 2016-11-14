@@ -19,9 +19,11 @@ def handle_quickreply(fbid,payload):
 def logg(text,symbol='*'):
 	return symbol*10 + text + symbol*10
 
-def post_fb_msg(fbid,message):
+def post_fb_msg(fbid,message,image=False):
 	post_fb_url='https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
 	output_text = message
+	if image:
+		output_text = 'Image Url : \n' + message
 	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": output_text }})
 	status1 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
 	print status1.json()
@@ -61,6 +63,7 @@ class MyChatBotView(generic.View):
 					if 'attachments' in message['message']:
 						url = message['message']['attachments'][0]['payload']['url']
 						print 'Image URL=%s' %url
+						post_fb_msg(sender_id, url, True)
 					else:
 						print logg(message['message'],'<>')
 				except Exception as e:
