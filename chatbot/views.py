@@ -28,6 +28,10 @@ def pdf_view(request):
 def add(image,c):
 	c.drawImage(image, 0,0, width=600,height=800,mask='auto')
 	c.showPage()
+	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
+	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Image Added Successfully' }})
+	status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
+	print status2.json()
 
 def handle_quickreply(fbid,payload):
 	
