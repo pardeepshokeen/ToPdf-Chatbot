@@ -25,7 +25,8 @@ def pdf_view(request):
         return response
     pdf.closed
 
-def add(image,c):
+def add(image):
+	global c
 	c.drawImage(image, 0,0, width=600,height=800,mask='auto')
 	c.showPage()
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
@@ -96,6 +97,7 @@ def post_fb_msg(fbid,message,image=False):
 	post_fb_url='https://graph.facebook.com/v2.6/me/messages?access_token=%s'%PAGE_ACCESS_TOKEN
 	output_text = message
 	print image
+	global c
 
 	if image:
 		output_text = 'Image Url : \n' + message
@@ -133,7 +135,7 @@ def post_fb_msg(fbid,message,image=False):
 		if c is None:
 			c=Canvas('file.pdf')
 		image = ImageReader(message)
-		add(image, c)
+		add(image)
 		quick_response(fbid)
 
 	else:
@@ -169,6 +171,7 @@ class MyChatBotView(generic.View):
 					sender_id = message['sender']['id']
 					message_text = message['message']['text']
 					post_fb_msg(sender_id,message_text, False)
+					return HttpResponse()
 				except Exception as e:
 					print e
 
