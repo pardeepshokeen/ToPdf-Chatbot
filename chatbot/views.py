@@ -11,9 +11,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 VERIFY_TOKEN = '13thnov2016'
 PAGE_ACCESS_TOKEN='EAADKnMFiOeABAMeUxrHrzp8X9lLxLa93BErKfI3oZBdDyvKZCXmBawIZALjL2en73JDFAbipf9EqAMGObAB4TKZAbvslp4ujRhaJqRntTl3IRZB0NG6b8i4onZBRm9FGDRIcTNZAte1VNwup7d2F52ZA8OBGqVBuyLL5AZBuE8XVrmwZDZD'
 c=None
+WIDTH = 'LETTER'
+HEIGHT = 'LETTER'
 
 def index(request):
-	return HttpResponse('hi')
+	with open(os.path.join(BASE_DIR,'file.pdf'), 'r') as pdf:
+		response = HttpResponse(pdf.read(), content_type='application/pdf')
+		response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+		return response
+	pdf.closed
+	return HttpResponse('ok')
 
 def logg(text,symbol='*'):
 	return symbol*10 + text + symbol*10
@@ -27,7 +34,7 @@ def pdf_view(request):
 
 def add(fbid, image):
 	global c
-	c.drawImage(image, 0,0, width=600,height=800,mask='auto')
+	c.drawImage(image, 0,0, WIDTH,HEIGHT)
 	c.showPage()
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
 	response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Image Added Successfully' }})
@@ -38,14 +45,15 @@ def handle_quickreply(fbid,payload):
 	
 	post_fb_url = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"%PAGE_ACCESS_TOKEN
 
+	global c
+
 	if 'add' in payload:
 		response_msg = json.dumps({"recipient":{"id":fbid}, "message":{"text": 'Ok Give us an image' }})
 		status2 = requests.post(post_fb_url, headers={"Content-Type": "application/json"},data=response_msg)
 		print status2.json()
 		return HttpResponse()
-	else:
-		
-		global c
+	
+	else:	
 		c.save()
 		response_msg = {
 				"recipient":{
