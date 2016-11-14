@@ -173,6 +173,7 @@ class MyChatBotView(generic.View):
 						return HttpResponse()
 
 				except Exception as e:
+					logg('exception')
 					print e
 
 				try:
@@ -180,7 +181,9 @@ class MyChatBotView(generic.View):
 					message_text = message['message']['text']
 					post_fb_msg(sender_id,message_text, False)
 					return HttpResponse()
+
 				except Exception as e:
+					logg('exception')
 					print e
 
 				try:
@@ -188,9 +191,10 @@ class MyChatBotView(generic.View):
 						url = message['message']['attachments'][0]['payload']['url']
 						print 'Image URL=%s' %url
 						post_fb_msg(sender_id, url, True)
-					else:
-						print logg(message['message'],'<>')
+						return HttpResponse()
+					
 				except Exception as e:
+					logg('exception')
 					print e
 
 		return HttpResponse()
